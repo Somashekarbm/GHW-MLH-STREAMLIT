@@ -74,7 +74,7 @@ def get_pokemon_data(pokemon_name) ->dict:
 
 pokemon_data=get_pokemon_data(poke_name)
 pokemon_data2=get_pokemon_data(poke_name2)
-
+#fetching two pokemon data and comparing them
 if pokemon_data and pokemon_data2:
     col1,col2 = st.columns(2)
     with col1:
@@ -89,7 +89,7 @@ if pokemon_data and pokemon_data2:
         #3rd is the color
         annotated_text(  
         (f'Pokemon Type: {poke_type}',"",colours[poke_type])
-    )
+        )
     with col2:
         st.header(pokemon_data2.get('name').capitalize())
         #sprites is the sub-dict and it contains the url in the 'front default' key
@@ -102,7 +102,20 @@ if pokemon_data and pokemon_data2:
         #3rd is the color
         annotated_text(  
         (f'Pokemon Type: {poke_type}',"",colours[poke_type])
-    )
+        )
+    # comparision={
+    #     pokemon_data.get('name').capitalize():pokemon_data.get('height'),
+    #     pokemon_data2.get('name').capitalize():pokemon_data2.get('height')
+    # }
+    # Create dictionary to store stats data for both Pokemon
+    stats_data1 = {stat['stat']['name']: stat['base_stat'] for stat in pokemon_data['stats']}
+    stats_data2 = {stat['stat']['name']: stat['base_stat'] for stat in pokemon_data2['stats']}
+
+    # Create DataFrame from the stats data
+    df_stats = pd.DataFrame([stats_data1, stats_data2])
+
+    # Plot bar chart
+    st.bar_chart(df_stats)
 
 
 
