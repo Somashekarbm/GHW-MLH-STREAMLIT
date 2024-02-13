@@ -47,22 +47,24 @@ st.divider()
 # #create a dataframe with the pokemon data --check many more attributes for this func. in documentation
 # st.dataframe(data=data)
 #get random pokedex number-
-random_number=str(np.random.randint(1,151))
-def get_random_pokemon()->str:
+random_number=str(np.random.randint(1,1001))
+random_number2=str(np.random.randint(1,1001))
+def get_random_pokemon(number:int)->str:
     try:
-        url="https://pokeapi.co/api/v2/pokemon-species/"+random_number
+        url="https://pokeapi.co/api/v2/pokemon-species/"+number
         response=requests.get(url)
         data=response.json()
     except Exception as e:
         st.write(f'Error: {e}')
         data=None
     return data.get("name")  #here we get a random pokemon's name 
-poke_name=get_random_pokemon()
+poke_name=get_random_pokemon(random_number)
+poke_name2=get_random_pokemon(random_number2)
 #fetching data for the pokemon from an api using url requests
 #this part is to get a pokemon's data specified with the url 
-def get_pokemon_data() ->dict:
+def get_pokemon_data(pokemon_name) ->dict:
     try:
-        url="https://pokeapi.co/api/v2/pokemon/"+poke_name
+        url="https://pokeapi.co/api/v2/pokemon/"+pokemon_name
         response=requests.get(url)
         data=response.json()
     except Exception as e:
@@ -70,10 +72,50 @@ def get_pokemon_data() ->dict:
         data=None
     return data  #here we get the same random generated pokemon's data dictonary
 
-pokemon_data=get_pokemon_data()
+pokemon_data=get_pokemon_data(poke_name)
+pokemon_data2=get_pokemon_data(poke_name2)
 
-if pokemon_data:
-    #if you try to display the data having different length of json dictonaries then you can print an error to the user like below 
+if pokemon_data and pokemon_data2:
+    col1,col2 = st.columns(2)
+    with col1:
+        st.header(pokemon_data.get('name').capitalize())
+        #sprites is the sub-dict and it contains the url in the 'front default' key
+        st.image(pokemon_data.get('sprites').get('front_default'))
+        st.write('Pokemon Weight: ',pokemon_data.get('weight'))
+        poke_type=pokemon_data.get('types')[0].get('type').get('name')
+        #the tuple below takes 3 attributes -
+        #1st is the main header/data 
+        #2nd is the subheader/can be empty
+        #3rd is the color
+        annotated_text(  
+        (f'Pokemon Type: {poke_type}',"",colours[poke_type])
+    )
+    with col2:
+        st.header(pokemon_data2.get('name').capitalize())
+        #sprites is the sub-dict and it contains the url in the 'front default' key
+        st.image(pokemon_data2.get('sprites').get('front_default'))
+        st.write('Pokemon Weight: ',pokemon_data2.get('weight'))
+        poke_type=pokemon_data2.get('types')[0].get('type').get('name')
+        #the tuple below takes 3 attributes -
+        #1st is the main header/data 
+        #2nd is the subheader/can be empty
+        #3rd is the color
+        annotated_text(  
+        (f'Pokemon Type: {poke_type}',"",colours[poke_type])
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+#if you try to display the data having different length of json dictonaries then you can print an error to the user like below 
     # # Attempt to convert JSON dictionary to DataFrame
     # try:
     #     df = pd.DataFrame.from_dict(pokemon_data)
@@ -82,20 +124,6 @@ if pokemon_data:
     # except ValueError as e:
     #     # Display an error message if conversion fails
     #     st.error(f"Error: Unable to create DataFrame - {str(e)}")
-    st.write('Pokemon data retrieved successfully')
-    #just random info display
-    st.header(pokemon_data.get('name'))
-    #sprites is the sub-dict and it contains the url in the 'front default' key
-    st.image(pokemon_data.get('sprites').get('front_default'))
-    st.write('Pokemon Weight: ',pokemon_data.get('weight'))
-    poke_type=pokemon_data.get('types')[0].get('type').get('name')
-    #the tuple below takes 3 attributes -
-     #1st is the main header/data 
-     #2nd is the subheader/can be empty
-     #3rd is the color
-    annotated_text(  
-    (f'Pokemon Type: {poke_type}',"",colours[poke_type])
-)
 
     
 
